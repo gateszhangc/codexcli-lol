@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://codexcli.lol/sitemap.xml
