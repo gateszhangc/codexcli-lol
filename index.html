@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Codex CLI — AI Assistant for Code and Work</title>
+<meta name="description" content="Codex CLI is your AI assistant for work. Built for real engineering work across multiple surfaces. Get tasks and projects done from start to finish with autonomous agent workflows." />
+<meta name="keywords" content="Codex CLI, AI assistant, coding agent, AI code editor, autonomous coding, developer AI, AI terminal, code automation, CLI agent, AI developer tools" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://codexcli.dev/" />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Codex CLI — AI Assistant for Code and Work" />
+<meta property="og:description" content="Codex CLI is your AI assistant for work. Built for real engineering work across multiple surfaces. Get tasks and projects done from start to finish." />
+<meta property="og:url" content="https://codexcli.dev/" />
+<meta property="og:site_name" content="Codex CLI" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Codex CLI — AI Assistant for Code and Work" />
+<meta name="twitter:description" content="Codex CLI is your AI assistant for work. Built for real engineering work across multiple surfaces." />
+
+<!-- Favicon - set via canvas -->
+<link rel="icon" type="image/png" href="data:," />
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#f5f5f5;
+  --dark:#0a0a0a;
+  --panel:#111111;
+  --panel-hover:#1a1a1a;
+  --blue:#3b82f6;
+  --cyan:#22d3ee;
+  --violet:#8b5cf6;
+  --orange:#f97316;
+  --green:#22c55e;
+  --gray:#6b7280;
+  --gray-light:#9ca3af;
+  --amber:#f59e0b;
+  --border:#1f1f1f;
+  --radius:12px;
+  --max-w:1120px;
+  --font-sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+  --font-mono:"SF Mono","Fira Code","Cascadia Code",monospace;
+}
+html{scroll-behavior:smooth;background:var(--dark);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+
+/* Navbar */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(10,10,10,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.navbar-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:var(--max-w);margin:0 auto;padding:0 24px;height:56px;
+}
+.navbar-brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+.navbar-brand canvas{display:block}
+.navbar-links{display:flex;align-items:center;gap:24px}
+.navbar-links a{font-size:14px;color:var(--gray-light);transition:color .2s}
+.navbar-links a:hover{color:var(--ink)}
+.navbar-cta{
+  padding:6px 16px;border-radius:8px;
+  background:linear-gradient(135deg,var(--blue),var(--violet));
+  color:var(--ink);font-size:13px;font-weight:500;
+  transition:opacity .2s;border:none;cursor:pointer;
+}
+.navbar-cta:hover{opacity:.9}
+
+/* Hero */
+.hero{
+  padding:140px 24px 80px;text-align:center;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(59,130,246,.08),transparent);
+}
+.hero-logo{margin-bottom:24px}
+.hero-logo canvas{display:block;margin:0 auto}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 14px;border-radius:100px;border:1px solid var(--border);
+  font-size:13px;color:var(--gray-light);margin-bottom:24px;
+}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block}
+.hero h1{
+  font-size:clamp(2.5rem,6vw,4rem);font-weight:700;line-height:1.1;
+  max-width:720px;margin:0 auto 20px;
+}
+.hero h1 .gradient{
+  background:linear-gradient(135deg,var(--blue),var(--cyan),var(--violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero p{
+  font-size:clamp(1rem,2vw,1.2rem);color:var(--gray-light);line-height:1.7;
+  max-width:580px;margin:0 auto 36px;
+}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 28px;border-radius:var(--radius);
+  background:linear-gradient(135deg,var(--blue),var(--violet));
+  color:var(--ink);font-size:15px;font-weight:500;
+  border:none;cursor:pointer;transition:transform .2s,opacity .2s;
+}
+.btn-primary:hover{transform:translateY(-1px);opacity:.95}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 28px;border-radius:var(--radius);
+  border:1px solid var(--border);color:var(--ink);font-size:15px;font-weight:500;
+  transition:background .2s;
+}
+.btn-secondary:hover{background:var(--panel)}
+
+/* Section common */
+.section{
+  padding:80px 24px;
+  max-width:var(--max-w);margin:0 auto;width:100%;
+}
+.section-label{
+  font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--blue);margin-bottom:12px;
+}
+.section h2{
+  font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;line-height:1.2;
+  margin-bottom:16px;
+}
+.section > .subtitle{
+  color:var(--gray-light);font-size:1.05rem;line-height:1.7;
+  max-width:600px;margin-bottom:48px;
+}
+.section-centered{text-align:center}
+.section-centered > .subtitle{margin:0 auto 48px}
+
+/* Features grid */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:16px;
+}
+.feature-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:28px;transition:background .2s,border-color .2s;
+}
+.feature-card:hover{background:var(--panel-hover);border-color:var(--gray)}
+.feature-card-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:16px;
+}
+.feature-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.feature-card p{font-size:14px;color:var(--gray-light);line-height:1.6}
+
+/* Steps */
+.steps-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:24px;
+  counter-reset:step;
+}
+.step-card{
+  background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:28px;position:relative;
+}
+.step-card::before{
+  counter-increment:step;
+  content:"0" counter(step);
+  font-size:12px;font-weight:700;letter-spacing:.05em;
+  color:var(--gray);margin-bottom:12px;display:block;
+}
+.step-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.step-card p{font-size:14px;color:var(--gray-light);line-height:1.6}
+
+/* Why it matters / Highlights */
+.highlights{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px}
+.highlight-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center}
+.highlight-card .num{font-size:2.5rem;font-weight:700;background:linear-gradient(135deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.highlight-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.highlight-card p{font-size:14px;color:var(--gray-light);line-height:1.6}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:0;max-width:720px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border);padding:20px 0}
+.faq-question{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  font-size:15px;font-weight:500;cursor:pointer;
+  background:none;border:none;color:var(--ink);width:100%;text-align:left;padding:0;
+}
+.faq-question .chevron{color:var(--gray);transition:transform .3s;font-size:14px;flex-shrink:0}
+.faq-item.open .chevron{transform:rotate(180deg)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;padding-top:0}
+.faq-item.open .faq-answer{max-height:300px;padding-top:16px}
+.faq-answer p{font-size:14px;color:var(--gray-light);line-height:1.7}
+
+/* Sources */
+.sources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.source-card{
+  display:block;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+  padding:24px;transition:background .2s,border-color .2s;
+}
+.source-card:hover{background:var(--panel-hover);border-color:var(--gray)}
+.source-card .source-label{font-size:12px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.source-card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.source-card p{font-size:13px;color:var(--gray-light);line-height:1.5}
+.source-card .arrow{color:var(--blue);font-size:14px;margin-top:8px;display:inline-block}
+
+/* Footer */
+.footer{
+  margin-top:auto;
+  border-top:1px solid var(--border);
+  padding:40px 24px;
+  text-align:center;
+}
+.footer-inner{max-width:var(--max-w);margin:0 auto}
+.footer-brand{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px}
+.footer-brand span{font-weight:600;font-size:14px}
+.footer p{font-size:13px;color:var(--gray)}
+
+/* Responsive */
+@media(max-width:640px){
+  .navbar-links{display:none}
+  .hero{padding:120px 16px 60px}
+  .section{padding:60px 16px}
+  .features-grid,.steps-grid,.highlights,.sources-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="/" class="navbar-brand">
+      <canvas id="brand-canvas" width="22" height="22" style="width:22px;height:22px"></canvas>
+      Codex CLI
+    </a>
+    <div class="navbar-links">
+      <a href="#overview">Overview</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#why-it-matters">Why It Matters</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="https://mirofish.my/" class="navbar-cta" target="_blank" rel="noopener">Get Started</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-logo">
+    <canvas id="hero-canvas" width="96" height="96" style="width:96px;height:96px"></canvas>
+  </div>
+  <div class="hero-badge">
+    <span></span>
+    Autonomous AI Agent for Code
+  </div>
+  <h1>
+    Your <span class="gradient">AI assistant</span> for code and work
+  </h1>
+  <p>
+    Codex CLI is built for real engineering work across multiple surfaces.
+    Get tasks and projects done from start to finish with autonomous agent workflows,
+    right from your terminal.
+  </p>
+  <div class="hero-actions">
+    <a href="https://mirofish.my/" class="btn-primary" target="_blank" rel="noopener">
+      Get Started Free
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+    <a href="https://mirofish.my/" class="btn-secondary" target="_blank" rel="noopener">
+      View Documentation
+    </a>
+  </div>
+</section>
+
+<!-- Overview -->
+<section class="section" id="overview">
+  <div class="section-label">Overview</div>
+  <h2>What makes Codex CLI different</h2>
+  <p class="subtitle">
+    An AI agent that edits code, runs experiments, checks results, and keeps only the changes that improve your project.
+  </p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-card-icon" style="background:rgba(59,130,246,.15);color:var(--blue)">⚡</div>
+      <h3>Real feedback loop, not just automation</h3>
+      <p>The agent proposes a change, runs the task, reads the result, and keeps only the changes that improve the outcome. Every cycle is a real iteration.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon" style="background:rgba(34,211,238,.15);color:var(--cyan)">🔧</div>
+      <h3>One surface, full control</h3>
+      <p>All engineering decisions stay inside your codebase. Every edit is easy to inspect, compare, and review before it becomes permanent.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon" style="background:rgba(139,92,246,.15);color:var(--violet)">🔄</div>
+      <h3>Agent-native workflow</h3>
+      <p>The development process becomes the thing being optimized. Codex CLI turns repetitive tasks into autonomous loops you can trust.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon" style="background:rgba(34,197,94,.15);color:var(--green)">📦</div>
+      <h3>Works where you work</h3>
+      <p>Use Codex CLI across your editor, terminal, and CI pipelines. Same agent, same context, connected by your account.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon" style="background:rgba(245,158,11,.15);color:var(--amber)">📊</div>
+      <h3>Reviewable diffs</h3>
+      <p>Every change is surfaced as a clear diff. Review, refine, and approve — you stay in control of what goes into the codebase.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon" style="background:rgba(249,115,22,.15);color:var(--orange)">🚀</div>
+      <h3>Ship faster, not sloppier</h3>
+      <p>Automate PR reviews, scan for vulnerabilities, and run agent workflows locally or in the cloud. Enterprise-ready from day one.</p>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section" id="how-it-works">
+  <div class="section-label">How It Works</div>
+  <h2>The loop stays small so every improvement is easy to judge</h2>
+  <p class="subtitle">
+    One codebase, one agent, and one feedback loop keep the system narrow enough to inspect and strong enough to iterate.
+  </p>
+  <div class="steps-grid">
+    <div class="step-card">
+      <h3>Inspect the setup</h3>
+      <p>The agent reads your project context, understands the task, and decides what changes to propose in the codebase.</p>
+    </div>
+    <div class="step-card">
+      <h3>Propose a change</h3>
+      <p>Architecture, logic, configuration, dependencies — the agent edits the files that matter for the task at hand.</p>
+    </div>
+    <div class="step-card">
+      <h3>Execute and verify</h3>
+      <p>Every change gets tested under real conditions. The agent runs the relevant commands and checks the results.</p>
+    </div>
+    <div class="step-card">
+      <h3>Keep or discard</h3>
+      <p>Improvements stay. Regressions get rolled back. The agent iterates until the task is done — or hands control back to you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Why It Matters -->
+<section class="section section-centered" id="why-it-matters">
+  <div class="section-label">Why It Matters</div>
+  <h2>It turns development work into something an agent can repeat</h2>
+  <p class="subtitle">
+    Most tools automate execution. Codex CLI automates the cycle of proposing, testing, and deciding.
+  </p>
+  <div class="highlights">
+    <div class="highlight-card">
+      <div class="num">01</div>
+      <h3>Autonomous loops</h3>
+      <p>The development process becomes the thing being optimized. Codex CLI runs feedback cycles so you don't have to.</p>
+    </div>
+    <div class="highlight-card">
+      <div class="num">02</div>
+      <h3>Reviewable changes</h3>
+      <p>The edit surface stays narrow enough to inspect at a glance. Every change is surfaced before it lands.</p>
+    </div>
+    <div class="highlight-card">
+      <div class="num">03</div>
+      <h3>Agent-native design</h3>
+      <p>Built from the ground up for autonomous workflows, not retrofitted. Codex CLI speaks the language of agents.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-centered" id="faq">
+  <div class="section-label">FAQ</div>
+  <h2>The fastest answers to the questions people ask first</h2>
+  <p class="subtitle">
+    Start here if you want to know what Codex CLI is, how it works, and how to get started — without reading the whole page.
+  </p>
+  <div class="faq-list">
+    <div class="faq-item open">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What is Codex CLI?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>Codex CLI is an AI-powered assistant that works across your terminal, editor, and CI pipelines. It autonomously proposes changes, runs tasks, and keeps only the improvements — turning development into a repeatable feedback loop.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What surfaces does Codex CLI work on?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>Codex CLI works across multiple surfaces — your local terminal, VS Code editor, CI/CD pipelines, and cloud environments. Your account connects context across all of them.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How is Codex CLI different from other AI coding tools?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>Most tools automate single steps. Codex CLI automates the full loop — propose, execute, verify, decide. It's an autonomous agent, not just a code completer.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can Codex CLI handle real engineering work?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>Yes. Codex CLI is built for real engineering work — PR reviews, vulnerability scanning, prototype builds, bug triage, and multi-step tasks that span multiple files and services.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Is Codex CLI secure for teams?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>Codex CLI offers enterprise-ready security controls, advanced analytics, 100+ integrations, and pay-as-you-go pricing with no seat fees. Run agent workflows locally or in the cloud.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How do I get started with Codex CLI?
+        <span class="chevron">▼</span>
+      </button>
+      <div class="faq-answer">
+        <p>Getting started takes minutes. Download the CLI, connect your account, and point it at a project. Codex CLI will read your codebase and start helping immediately.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Primary Sources -->
+<section class="section section-centered">
+  <div class="section-label">Primary Sources</div>
+  <h2>Every claim grounded in the official documentation</h2>
+  <p class="subtitle">
+    All details on this page are sourced from the official Codex resources so you can verify them yourself.
+  </p>
+  <div class="sources-grid">
+    <a href="https://mirofish.my/" class="source-card" target="_blank" rel="noopener">
+      <div class="source-label">Official Site</div>
+      <h3>Codex CLI — AI Assistant for Work</h3>
+      <p>The official product page with feature overviews, use cases, and getting-started guides.</p>
+      <span class="arrow">→</span>
+    </a>
+    <a href="https://mirofish.my/" class="source-card" target="_blank" rel="noopener">
+      <div class="source-label">Developer Docs</div>
+      <h3>Codex Developer Documentation</h3>
+      <p>Technical documentation for integrating Codex CLI into your development workflow.</p>
+      <span class="arrow">→</span>
+    </a>
+    <a href="https://mirofish.my/" class="source-card" target="_blank" rel="noopener">
+      <div class="source-label">Community</div>
+      <h3>Join the Discussion</h3>
+      <p>Community discussions, updates, and shared workflows from engineers using Codex CLI.</p>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <canvas id="brand-canvas-footer" width="20" height="20" style="width:20px;height:20px"></canvas>
+      <span>Codex CLI</span>
+    </div>
+    <p>Your AI assistant for code and work. Built for real engineering.</p>
+  </div>
+</footer>
+
+<script>
+// ── Palette ──
+const palette = {
+  ink: "#f5f5f5",
+  dark: "#0a0a0a",
+  panel: "#111111",
+  blue: "#3b82f6",
+  cyan: "#22d3ee",
+  violet: "#8b5cf6",
+  orange: "#f97316",
+  green: "#22c55e",
+  gray: "#6b7280",
+  amber: "#f59e0b",
+};
+
+function scaleCanvas(canvas, logicalWidth, logicalHeight) {
+  const ratio = window.devicePixelRatio || 1;
+  const w = Math.round(logicalWidth * ratio);
+  const h = Math.round(logicalHeight * ratio);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w;
+    canvas.height = h;
+  }
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  return ctx;
+}
+
+function drawCodexIcon(ctx, x, y, size, variant) {
+  const unit = size / 72;
+  ctx.save();
+  ctx.translate(x, y);
+
+  const r = 16 * unit;
+
+  // Glow behind
+  ctx.shadowColor = palette.blue;
+  ctx.shadowBlur = 16 * unit;
+
+  // Outer rounded square
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.lineTo(72 * unit - r, 0);
+  ctx.quadraticCurveTo(72 * unit, 0, 72 * unit, r);
+  ctx.lineTo(72 * unit, 72 * unit - r);
+  ctx.quadraticCurveTo(72 * unit, 72 * unit, 72 * unit - r, 72 * unit);
+  ctx.lineTo(r, 72 * unit);
+  ctx.quadraticCurveTo(0, 72 * unit, 0, 72 * unit - r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.closePath();
+  ctx.fillStyle = palette.dark;
+  ctx.fill();
+
+  ctx.shadowBlur = 0;
+
+  // Gradient border
+  const gradient = ctx.createLinearGradient(0, 0, 72 * unit, 72 * unit);
+  gradient.addColorStop(0, palette.blue);
+  gradient.addColorStop(0.5, palette.cyan);
+  gradient.addColorStop(1, palette.violet);
+  ctx.strokeStyle = gradient;
+  ctx.lineWidth = 2 * unit;
+  ctx.stroke();
+
+  if (variant === "brand") {
+    // "C" letterform for Codex
+    ctx.beginPath();
+    ctx.arc(36 * unit, 36 * unit, 18 * unit, 0, Math.PI * 2);
+    ctx.moveTo(50 * unit, 28 * unit);
+    ctx.arc(36 * unit, 36 * unit, 18 * unit, 0.35, -0.35);
+    ctx.strokeStyle = palette.ink;
+    ctx.lineWidth = 4 * unit;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    // Code brackets <>
+    ctx.beginPath();
+    ctx.moveTo(26 * unit, 30 * unit);
+    ctx.lineTo(20 * unit, 36 * unit);
+    ctx.lineTo(26 * unit, 42 * unit);
+    ctx.moveTo(46 * unit, 30 * unit);
+    ctx.lineTo(52 * unit, 36 * unit);
+    ctx.lineTo(46 * unit, 42 * unit);
+    ctx.strokeStyle = palette.cyan;
+    ctx.lineWidth = 2.5 * unit;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    // Dot
+    ctx.beginPath();
+    ctx.arc(36 * unit, 36 * unit, 2 * unit, 0, Math.PI * 2);
+    ctx.fillStyle = palette.cyan;
+    ctx.fill();
+  } else {
+    // Hero variant: larger "C" with bracket motif
+
+    // "C" letterform - larger
+    ctx.beginPath();
+    ctx.arc(36 * unit, 36 * unit, 20 * unit, 0, Math.PI * 2);
+    ctx.moveTo(52 * unit, 26 * unit);
+    ctx.arc(36 * unit, 36 * unit, 20 * unit, 0.3, -0.3);
+    ctx.strokeStyle = palette.ink;
+    ctx.lineWidth = 5 * unit;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    // Brackets < > - larger
+    ctx.beginPath();
+    ctx.moveTo(24 * unit, 28 * unit);
+    ctx.lineTo(16 * unit, 36 * unit);
+    ctx.lineTo(24 * unit, 44 * unit);
+    ctx.moveTo(48 * unit, 28 * unit);
+    ctx.lineTo(56 * unit, 36 * unit);
+    ctx.lineTo(48 * unit, 44 * unit);
+    ctx.strokeStyle = palette.cyan;
+    ctx.lineWidth = 3 * unit;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    // Data dots on the arc
+    for (let i = 0; i < 4; i++) {
+      const angle = -0.8 + (i / 3) * 1.6;
+      const dx = 36 * unit + Math.cos(angle) * 14 * unit;
+      const dy = 36 * unit + Math.sin(angle) * 14 * unit;
+      ctx.beginPath();
+      ctx.arc(dx, dy, 2.5 * unit, 0, Math.PI * 2);
+      ctx.fillStyle = palette.cyan;
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function drawBrandLogo(id) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const ctx = scaleCanvas(canvas, 22, 22);
+  ctx.clearRect(0, 0, 22, 22);
+  drawCodexIcon(ctx, 0, 0, 22, "brand");
+}
+
+function drawBrandLogoFooter() {
+  const canvas = document.getElementById("brand-canvas-footer");
+  if (!canvas) return;
+  const ctx = scaleCanvas(canvas, 20, 20);
+  ctx.clearRect(0, 0, 20, 20);
+  drawCodexIcon(ctx, 0, 0, 20, "brand");
+}
+
+function drawHeroLogo() {
+  const canvas = document.getElementById("hero-canvas");
+  if (!canvas) return;
+  const ctx = scaleCanvas(canvas, 96, 96);
+  ctx.clearRect(0, 0, 96, 96);
+  drawCodexIcon(ctx, 0, 0, 96, "hero");
+}
+
+function installCanvasFavicon() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 72;
+  canvas.height = 72;
+  const ctx = canvas.getContext("2d");
+  drawCodexIcon(ctx, 0, 0, 72, "brand");
+  const link = document.querySelector("link[rel='icon']") || document.createElement("link");
+  link.rel = "icon";
+  link.type = "image/png";
+  link.href = canvas.toDataURL("image/png");
+  document.head.appendChild(link);
+}
+
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  item.classList.toggle("open");
+}
+
+function drawAll() {
+  drawBrandLogo("brand-canvas");
+  drawBrandLogoFooter();
+  drawHeroLogo();
+}
+
+function initCanvas() {
+  drawAll();
+  installCanvasFavicon();
+}
+
+function safeInit() {
+  const brandCanvas = document.getElementById("brand-canvas");
+  if (brandCanvas && brandCanvas.getContext) {
+    initCanvas();
+  } else {
+    requestAnimationFrame(safeInit);
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", safeInit);
+} else {
+  safeInit();
+}
+</script>
+</body>
+</html>
